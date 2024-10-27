@@ -18,6 +18,7 @@ class Game {
         this.xDown = null; // Position where the user touched the screen
         this.paused = false; // Indicates whether the game is paused
         this.score = 0;
+        this.opponents = [];
         
     }
 
@@ -98,14 +99,41 @@ class Game {
     /**
      * Remove the opponent from the game
      */
+   
     removeOpponent(opponent) {
-        if (this.score === 1) {  // Cuando el marcador es 1, crea al Boss
-            this.opponent = new Boss(this);  // Reemplaza al oponente con el Boss
-        } else {
-            // Crea un nuevo oponente si no es el momento de generar el Boss
-            this.opponent = new Opponent(this);
+        
+        this.opponents = this.opponents.filter(o => !o.dead);
+    
+        
+        if (this.score === 6) {
+            this.endGame(true);  
+            return;  
+        }
+    
+       
+        if (this.opponents.length === 0) {
+            if (this.score === 1) {  
+                
+                this.opponents = [new Boss(this)];
+                
+            } else if (this.score === 2) {
+                
+                this.opponents = [new Boss(this), new Opponent(this)];
+                
+            } else if (this.score === 4) {
+                
+                this.opponents = [new Boss(this), new Boss(this)];
+            } else {
+               
+                this.opponents = [new Opponent(this)];
+            }
         }
     }
+    
+    
+    
+    
+
 
     /**
     * Checks which key the user is pressing
@@ -182,24 +210,37 @@ class Game {
     * Checks if the main character and the opponent have collided with each other or with the shots using the hasCollision method
     */
 
-    checkCollisions () {
+    checkCollisions() {
         let impact = false;
-
-        for (let i = 0; i < this.opponentShots.length; i++) {
-            impact = impact || this.hasCollision(this.player, this.opponentShots[i]);
-        }
-        if (impact || this.hasCollision(this.player, this.opponent)) {
+    
+        
+        this.opponentShots.forEach(shot => {
+            impact = impact || this.hasCollision(this.player, shot);
+        });
+    
+        if (impact) {
             this.player.collide();
         }
-        let killed = false;
-
-        for (let i = 0; i < this.playerShots.length; i++) {
-            killed = killed || this.hasCollision(this.opponent, this.playerShots[i]);
-        }
-        if (killed) {
-            this.opponent.collide();
-        }
+    
+        
+        this.opponents.forEach(opponent => {
+            if (this.hasCollision(this.player, opponent)) {
+                this.player.collide();
+            }
+    
+            
+            let killed = false;
+            this.playerShots.forEach(shot => {
+                if (this.hasCollision(opponent, shot)) {
+                    killed = true;
+                }
+            });
+            if (killed) {
+                opponent.collide();
+            }
+        });
     }
+    
 
    /**
     * Checks if two game elements are colliding
@@ -253,38 +294,40 @@ class Game {
         if (!this.ended) {
             this.player.update();
             
-            // Asegura que el oponente esté definido y actualizado
-            if (this.opponent === undefined) {
-                this.opponent = new Opponent(this);
+           
+            if (this.opponents.length === 0) {
+                this.opponents = [new Opponent(this)];  
             }
-            this.opponent.update();  // Asegúrate de que el Boss u Opponent se actualicen
+    
+           
+            this.opponents.forEach(opponent => opponent.update());
             
-            this.playerShots.forEach((shot) => {
-                shot.update();
-            });
-            this.opponentShots.forEach((shot) => {
-                shot.update();
-            });
+            
+            this.playerShots.forEach(shot => shot.update());
+            this.opponentShots.forEach(shot => shot.update());
+            
             this.checkCollisions();
             this.render();
         }
     }
-
+    
+    
+    
     /**
      * Display all the game elements on the screen
      */
-    render () {
+    render() {
         this.player.render();
-        if (this.opponent !== undefined) {
-            this.opponent.render();
-        }
-        this.playerShots.forEach((shot) => {
-            shot.render();
-        });
-        this.opponentShots.forEach((shot) => {
-            shot.render();
-        });
+    
+        
+        this.opponents.forEach(opponent => opponent.render());
+    
+      
+        this.playerShots.forEach(shot => shot.render());
+        this.opponentShots.forEach(shot => shot.render());
     }
+    
+    
     updateScore() {
         const scoreElement = document.getElementById("score");
         if (scoreElement) {

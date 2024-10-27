@@ -63,19 +63,26 @@ class Opponent extends Character {
      * Kill the opponent
      */
     
+    
     collide() {
         if (!this.dead) {
             this.dead = true;
             this.image.src = this.myImageDead;
-            this.game.score++;  // Incrementa el puntaje
-            this.game.updateScore();  // Actualiza el marcador en pantalla
-
+            this.image.classList.add('flame-effect');  
+    
+            this.game.score++;  
+            this.game.updateScore();  
+    
             setTimeout(() => {
-                this.remove();
-                this.game.removeOpponent(this);
-            }, 2000);
+                this.remove();  
+                this.game.opponents = this.game.opponents.filter(o => o !== this); 
+                this.game.removeOpponent(this);  
+            }, 500);  
         }
     }
+    
+
+    
     
     
     

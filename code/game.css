@@ -1,35 +1,106 @@
+
 html {
     overflow: hidden;
-  }
-  
-  .Opponent {
-      animation: rotation 3s infinite linear;
-      -webkit-animation: rotation 3s infinite linear;
-  }
-  
-  .paused .Opponent {
-      animation: none;
-      -webkit-animation: none;
-  }
-  
-  @-webkit-keyframes rotation {
-      from {
-          transform: rotate(0deg);
-          -webkit-transform: rotate(0deg);
-      }
-      to {
-          transform: rotate(359deg);
-          -webkit-transform: rotate(359deg);
-      }
-  }
-  
-  .gamebutton {
-      border: none;
-      background: #ddd;
-      color: #333;
-      padding: 10px 20px;
-      outline: none;
-      font-family: monospace;
-      cursor: pointer;
-  }
-  
+}
+
+
+.Opponent {
+    animation: rotation 3s infinite linear;
+    -webkit-animation: rotation 3s infinite linear;
+}
+
+.paused .Opponent {
+    animation: none;
+    -webkit-animation: none;
+}
+
+@-webkit-keyframes rotation {
+    from {
+        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+        -webkit-transform: rotate(359deg);
+    }
+}
+
+
+#score {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #333;  
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #FFD700;  
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+}
+
+
+#lives {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #FFFFFF;  
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #FF69B4;  
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+}
+
+
+.gamebutton {
+    position: absolute;
+    bottom: 20px;
+    padding: 10px 15px;
+    font-size: 16px;
+    color: #FFFFFF;
+    background-color: #87CEFA; 
+    border: none;
+    border-radius: 8px;
+    font-family: monospace;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.gamebutton:hover {
+    background-color: #00BFFF; 
+}
+
+#pause {
+    left: 20px; 
+}
+
+#reset {
+    left: 120px; 
+}
+
+
+@keyframes flames {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+        filter: hue-rotate(0deg);
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0.8;
+        filter: hue-rotate(30deg);
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+        filter: hue-rotate(60deg);
+    }
+}
+
+.flame-effect {
+    animation: flames 0.5s forwards;
+}
+

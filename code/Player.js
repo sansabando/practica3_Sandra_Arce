@@ -47,20 +47,20 @@ class Player extends Character {
 
     collide() {
         if (!this.dead) {
-            this.lives--;  // Reduce una vida
-            this.game.updateLives();  // Actualiza el marcador de vidas
+            this.lives--;  
+            this.game.updateLives();  
 
-            // Cambia la imagen a "estrella" cuando el jugador es golpeado
+           
             this.image.src = this.myImageDead;
 
             if (this.lives > 0) {
-                this.dead = true;  // Marca al jugador como "temporalmente muerto"
+                this.dead = true;  
                 setTimeout(() => {
-                    this.dead = false;  // Revive al jugador
-                    this.image.src = this.originalImage;  // Recupera la imagen original
-                }, 2000);  // Recupera después de 2 segundos
+                    this.dead = false;  
+                    this.image.src = this.originalImage;  
+                }, 2000);  
             } else {
-                this.game.endGame(false);  // Termina el juego si las vidas llegan a cero
+                this.game.endGame(false);  
             }
         }
     }
