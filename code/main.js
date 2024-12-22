@@ -13,6 +13,7 @@ const OPPONENT_HEIGHT = 5,
     PLAYER_PICTURE_DEAD = "assets/player_dead.png",
     PLAYER_SPEED = 20,
     PLAYER_WIDTH = 5,
+    PLAYER_LIVES = 3,
     SHOT_HEIGHT = 1.5,
     SHOT_SPEED = 20,
     SHOT_PICTURE_PLAYER = "assets/shot1.png",
@@ -29,45 +30,42 @@ function collision (div1, div2) {
     return !(a.bottom < b.top || a.top > b.bottom || a.right < b.left || a.left > b.right);
 
 }
+
 var game;
+let deferredPrompt;
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/code/sw.js')
+    .then(registration => {
+      console.log('Service Worker registered successfully:', registration);
+    })
+    .catch(error => {
+      console.error('Error registering Service Worker:', error);
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
         game = new Game();
         game.start();
+        const installButton = document.getElementById("installButton");
+ 
+        window.addEventListener('beforeinstallprompt', (e) => {
+          e.preventDefault();
+          deferredPrompt = e;
+
+          installButton.addEventListener('click', () => {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+              if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted installation');
+              } else {
+                console.log('User declined installation');
+              }
+              deferredPrompt = null;
+            });
+          });
+        });
     }
 );
-
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-      .then((registration) => {
-        console.log('Service Worker registered:', registration);
-      })
-      .catch((error) => {
-        console.error('Service Worker registration failed:', error);
-      });
-}
-
-
-let deferredPrompt;
-const installButton = document.getElementById('installButton');
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  console.log('beforeinstallprompt fired'); 
-  e.preventDefault(); 
-  deferredPrompt = e;
-  installButton.style.display = 'block'; // Muestra el botón
-
-  installButton.addEventListener('click', () => {
-    deferredPrompt.prompt(); // Muestra el prompt manualmente
-    deferredPrompt.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('User accepted the A2HS prompt');
-      } else {
-        console.log('User dismissed the A2HS prompt');
-      }
-      deferredPrompt = null;
-    });
-  });
-});
-
 
   
