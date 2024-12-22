@@ -51,21 +51,23 @@ let deferredPrompt;
 const installButton = document.getElementById('installButton');
 
 window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
+  console.log('beforeinstallprompt fired'); 
+  e.preventDefault(); 
   deferredPrompt = e;
-  installButton.style.display = 'block';
+  installButton.style.display = 'block'; // Muestra el botón
 
   installButton.addEventListener('click', () => {
-    deferredPrompt.prompt();
+    deferredPrompt.prompt(); // Muestra el prompt manualmente
     deferredPrompt.userChoice.then((choiceResult) => {
       if (choiceResult.outcome === 'accepted') {
-        console.log('PWA installed');
+        console.log('User accepted the A2HS prompt');
       } else {
-        console.log('PWA installation dismissed');
+        console.log('User dismissed the A2HS prompt');
       }
       deferredPrompt = null;
     });
   });
 });
+
 
   
